@@ -228,6 +228,6 @@ if __name__ == '__main__':
     df_format.to_excel('./file/mvp_player_score.xlsx')
 
     # To DataBase
-    # cd
+    # Test
     # Disconnect
     disconnect_group()
