@@ -53,3 +53,5 @@ def disconnect_mysql() -> None:
 
 def run_mysql_query(sql) -> pd.DataFrame:
     return pd.read_sql_query(sql, connection)
+
+# End
