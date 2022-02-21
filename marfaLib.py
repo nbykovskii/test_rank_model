@@ -3,14 +3,18 @@ import pymysql
 import sshtunnel
 
 
+# noinspection PyGlobalUndefined
+
 def connect_to_ssh(
         ssh_host = 'datamart.wake-app.net',
         ssh_port = 22,
-        ssh_username = 'nbykovskij',
-        ssh_password = 'MooJoob21',
-        ssh_path = '~/.ssh/id_ed25519'
-):
+        ssh_username = None,
+        ssh_password = None,
+        ssh_path = None
+) -> None:
+
     global server
+
     server = sshtunnel.SSHTunnelForwarder(
         (ssh_host, ssh_port),
         ssh_host_key=None,
@@ -23,14 +27,14 @@ def connect_to_ssh(
     return server.start()
 
 
-def disconnect_ssh():
+def disconnect_ssh() -> None:
     return server.close()
 
 
-def connect_to_mysql(database_username = 'nbykovskij',
-                     database_password = 'PqFu2yH67rnruDESz9Y',
-                     database_name = 'bireport_db'
-):
+def connect_to_mysql(database_username = None,
+                     database_password = None,
+                     database_name = None
+) -> None:
 
     global connection
 
@@ -43,9 +47,9 @@ def connect_to_mysql(database_username = 'nbykovskij',
     )
 
 
-def disconnect_mysql():
+def disconnect_mysql() -> None:
     return connection.close()
 
 
-def run_mysql_query(sql):
+def run_mysql_query(sql) -> pd.DataFrame:
     return pd.read_sql_query(sql, connection)

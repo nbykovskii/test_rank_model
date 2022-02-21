@@ -1,12 +1,15 @@
 import pandas as pd
-
 import marfaLib as mrf
 
 
 # Connections group
 def connect_group() -> None:
-    mrf.connect_to_ssh()
-    mrf.connect_to_mysql()
+    mrf.connect_to_ssh(ssh_username=None,
+                       ssh_password=None,
+                       ssh_path=None)
+    mrf.connect_to_mysql(database_username=None,
+                         database_password=None,
+                         database_name=None)
 
 
 def disconnect_group() -> None:
@@ -61,7 +64,7 @@ def average_ngr_eur(row) -> float:
 
 def bonus_effective(row) -> float:
     try:
-        return (row['GGRSumTotal'] / row['cntMonthWithDep']) / (row['NGRSumTotal'] / row['cntMonthWithDep'])
+        return (row['NGRSumTotal'] / row['cntMonthWithDep']) / (row['GGRSumTotal'] / row['cntMonthWithDep'])
     except ZeroDivisionError:
         return 0
 
@@ -144,7 +147,7 @@ def total_scoring_krd_prct(df) -> pd.DataFrame:
 
 # Segmented
 def numeric_segmented_group(row) -> int:
-    if (round(float(row['totalKrdPrct']), 2) >= 0.01) & (round(float(row['totalKrdPrct']), 2) <= 0.11):
+    if (round(float(row['totalKrdPrct']), 2) >= 0) & (round(float(row['totalKrdPrct']), 2) <= 0.11):
         return 1
     elif (round(float(row['totalKrdPrct']), 2) >= 0.12) & (round(float(row['totalKrdPrct']), 2) <= 0.39):
         return 2
@@ -169,7 +172,7 @@ def numeric_segmented_group(row) -> int:
 
 
 def interp_segmented_group(row) -> str:
-    if (round(float(row['totalKrdPrct']), 2) >= 0.01) & (round(float(row['totalKrdPrct']), 2) <= 0.11):
+    if (round(float(row['totalKrdPrct']), 2) >= 0) & (round(float(row['totalKrdPrct']), 2) <= 0.11):
         return str('Bottom')
     elif (round(float(row['totalKrdPrct']), 2) >= 0.12) & (round(float(row['totalKrdPrct']), 2) <= 0.39):
         return str('Very low')
@@ -190,7 +193,7 @@ def interp_segmented_group(row) -> str:
     elif (round(float(row['totalKrdPrct']), 2) >= 0.93) & (round(float(row['AverageDepSumEur']), 2) >= 10000.0):
         return str('VIP 4')
     else:
-        return str('Very Bottom')
+        return str('Unsegmented')
 
 
 if __name__ == '__main__':
@@ -198,7 +201,7 @@ if __name__ == '__main__':
 
     # Base
     sql = "select * " \
-          "from bireport_db.SourceRankedByUsers "
+          "from bireport_db.SourceRankedByUsers where brandName='octocasino'"
 
     df = get_data_group(sql)
 
@@ -227,7 +230,5 @@ if __name__ == '__main__':
     # Uploading
     df_format.to_excel('./file/mvp_player_score.xlsx')
 
-    # To DataBase
-    # Test
     # Disconnect
     disconnect_group()
