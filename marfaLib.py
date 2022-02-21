@@ -3,7 +3,7 @@ import pymysql
 import sshtunnel
 
 
-# noinspection PyGlobalUndefined
+# noinspection PyGlobalUndefine
 
 def connect_to_ssh(
         ssh_host = 'datamart.wake-app.net',
